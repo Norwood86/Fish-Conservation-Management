@@ -1,0 +1,72 @@
+# The first step to completing box 3.1 is importing the data into R.
+# I have downloaded the zip file from the crcpress.com and taken the eggs and fish 
+# columns and saved them seperately as a CSV in order to ease the transport.
+
+getwd()
+
+# I will make the csv available for the x axis (crab body weight (g)) and the y axis
+# (number of eggs in ('000s)). The location of that file on your computer (right-click
+# --> properties --> under general tab --> copy and paste the location between quotation
+# marks in setwd() command.
+
+setwd("C:\\\\Users\\pault\\Desktop\\UMass\\Spring_2019\\Fisheries")
+list.files()
+fish <- read.csv("Box3.1.csv", check.names = FALSE)
+fish
+class(fish)
+
+# The calculations for the subsequent rows of data are easy enough to conduct using 
+# R. But first I need to set the variables for the Gradient (slope) and the intercept.
+# I will store them as m and b, respectively.
+
+m1 <- 2.59998891
+b1 <- 21.50984071
+
+m2 <- 2.370186364
+b2 <- 17.080
+
+# The predSSQ and predSAR rows will be calculated as follows. I did the calculation
+# in the first line and then "printed" the results with the second line in order to 
+# verify their accuracy:
+
+predSSQ <- (fish$Size * m1) + b1 
+predSSQ
+
+predSAR <- (fish$Size * m2) + b2
+predSAR
+
+# I did the same for the sum of squares column and sum of absolute values column:
+
+SSQ <- (fish$Eggs - predSSQ)^2
+SSQ
+
+
+SAR <- abs(fish$Eggs - predSAR)
+SAR
+
+# Now that all the data has been populated, it's time to plot the data and look to
+# see which method appears to give the best fit by eye in accordance with the 
+# directions found on page 65.
+
+# I had some difficulty in plotting the lines, so I will use the following command
+# to add the columns to the original table. With all of the data in the same data.frame
+# it should be easier to work with.
+
+fish <- cbind(fish, predSSQ, predSAR, SSQ, SAR)
+fish
+
+# First the data:
+
+plot(Eggs~Size, data = fish, xlim = c(0,250), ylim = c(0,800), pch = 19, 
+     ylab = "Number of Eggs ('000)", xlab = "Crab Body Weight (g)",
+     main = "Reproduction of Figure 3.3")
+
+# And now I will begin fitting lines to it.
+
+lines(predSSQ~Size, data = fish, lty = 1)
+lines(predSAR~Size, data = fish, lty = 2)
+
+legend("topleft", bty = "n", legend = c("predSSQ", "predSAR"), lty = 1:2)
+
+# Now I may conduct the analysis as suggested in box 3.1. This comparison will be
+# written out in an attached document to be submitted.
